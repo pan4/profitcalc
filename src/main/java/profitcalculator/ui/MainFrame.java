@@ -2,7 +2,6 @@ package profitcalculator.ui;
 
 import com.toedter.calendar.JDateChooser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -17,9 +16,6 @@ import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import java.awt.GridLayout;
 
-/**
- * Created by Александр on 01.10.2018.
- */
 @Component
 public class MainFrame extends JFrame {
 
@@ -32,19 +28,15 @@ public class MainFrame extends JFrame {
     @Value("${app.height}")
     private int height;
 
-    @Qualifier("dateChooser")
     @Autowired
     JDateChooser dateChooser;
 
-    @Qualifier("amountField")
     @Autowired
     JFormattedTextField amountField;
 
-    @Qualifier("recalculateButton")
     @Autowired
     JButton recalculateButton;
 
-    @Qualifier("resultField")
     @Autowired
     JTextField resultField;
 

@@ -1,4 +1,4 @@
-package profitcalculator.domain;
+package profitcalculator.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
