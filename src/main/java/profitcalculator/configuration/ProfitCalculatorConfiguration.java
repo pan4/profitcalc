@@ -1,15 +1,20 @@
 package profitcalculator.configuration;
 
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.toedter.calendar.JDateChooser;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
+import profitcalculator.ui.button.ActionListenerButton;
+import profitcalculator.ui.button.RecalculateButtonActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;
 import javax.swing.text.NumberFormatter;
-import java.awt.Dimension;
+import java.awt.event.ActionListener;
 import java.text.NumberFormat;
 import java.util.Date;
 
@@ -19,13 +24,26 @@ import java.util.Date;
 @Configuration
 public class ProfitCalculatorConfiguration {
 
-//    @Bean
-//    public MainFrame mainFrame(){
-//        return new MainFrame("ProfitCalculator");
-//    }
+    @Bean
+    public ObjectMapper objectMapper() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
+        return mapper;
+    }
 
-    @Value("${app.width:}")
-    private int width;
+    @Bean
+    public MappingJackson2HttpMessageConverter mappingJacksonHttpMessageConverter() {
+        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+        converter.setObjectMapper(objectMapper());
+        return converter;
+    }
+
+    @Bean
+    public RestTemplate restTemplate() {
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(0, mappingJacksonHttpMessageConverter());
+        return restTemplate;
+    }
 
     @Bean
     public JDateChooser dateChooser(){
@@ -45,57 +63,27 @@ public class ProfitCalculatorConfiguration {
         formatter.setAllowsInvalid(false);
         formatter.setCommitsOnValidEdit(true);
         JFormattedTextField field = new JFormattedTextField(formatter);
+        field.setValue(0);
         return field;
     }
 
-//    @Bean
-//    public BoxLayoutPanel dateAndAmountBox(){
-//        BoxLayoutPanel panel = new BoxLayoutPanel();
-//        List<JComponent> list = new ArrayList<JComponent>();
-//        list.add(dateChooser());
-//        list.add(amountField());
-//        panel.setPanelComponents(list);
-//        panel.setAxis(0);
-//        panel.setMinimumSize(new Dimension(width,40));
-//        return panel;
-//    }
-
     @Bean
     public JButton recalculateButton(){
-        JButton button = new JButton();
+        ActionListenerButton button = new ActionListenerButton();
+        button.setActionListener(recalculateButtonActionListener());
         button.setText("Recalculate");
         return button;
+    }
+
+    @Bean
+    public ActionListener recalculateButtonActionListener(){
+        return new RecalculateButtonActionListener();
     }
 
     @Bean
     public JTextField resultField(){
         JTextField field = new JTextField();
         field.setEditable(false);
-        field.setMinimumSize(new Dimension(width/2,40));
         return field;
     }
-
-//    @Bean
-//    public BoxLayoutPanel reculcAndResultBox(){
-//        BoxLayoutPanel panel = new BoxLayoutPanel();
-//        List<JComponent> list = new ArrayList<JComponent>();
-//        list.add(recalculateButton());
-//        list.add(resultLable());
-//        panel.setPanelComponents(list);
-//        panel.setAxis(0);
-//        panel.setMinimumSize(new Dimension(width,40));
-//        return panel;
-//    }
-
-//    @Bean
-//    public BoxLayoutPanel rootBox(){
-//        BoxLayoutPanel panel = new BoxLayoutPanel();
-//        List<JComponent> list = new ArrayList<JComponent>();
-//        list.add(dateAndAmountBox());
-//        list.add(reculcAndResultBox());
-//        panel.setPanelComponents(list);
-//        panel.setAxis(1);
-//        return panel;
-//    }
-
 }

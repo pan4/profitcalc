@@ -23,13 +23,13 @@ import java.awt.GridLayout;
 @Component
 public class MainFrame extends JFrame {
 
-    @Value("${app.title:}")
+    @Value("${app.title}")
     private String title;
 
-    @Value("${app.width:}")
+    @Value("${app.width}")
     private int width;
 
-    @Value("${app.height:}")
+    @Value("${app.height}")
     private int height;
 
     @Qualifier("dateChooser")
